@@ -3,7 +3,7 @@ package co.com.crediyarequest.model.application;
 
 
 public class Application {
-    private Long id;
+    private Long idRequest;
     private Long idState;
     private Long longTypeId;
     private double amount;
@@ -14,7 +14,6 @@ public class Application {
     }
 
     public Application(Long idState, Long longTypeId, double amount, int term, String document) {
-
         this.idState = idState;
         this.longTypeId = longTypeId;
         this.amount = amount;
@@ -22,12 +21,12 @@ public class Application {
         this.document = document;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdRequest() {
+        return idRequest;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdRequest(Long idRequest) {
+        this.idRequest = idRequest;
     }
 
     public Long getIdState() {
