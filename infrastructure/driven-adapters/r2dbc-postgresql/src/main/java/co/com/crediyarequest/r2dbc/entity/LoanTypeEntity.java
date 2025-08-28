@@ -6,12 +6,12 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-@Table(name="tipo_prestamo")
+@Table(name="tipo_prestamos")
 public class LoanTypeEntity {
 
     @Id
     @Column("id_tipo_prestamo")
-    private Long IdlongType;
+    private Long idloanType;
 
     @Column("nombre")
     private String name;

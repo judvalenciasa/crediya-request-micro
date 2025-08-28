@@ -5,7 +5,7 @@ package co.com.crediyarequest.model.application;
 public class Application {
     private Long idRequest;
     private Long idState;
-    private Long longTypeId;
+    private Long idloanType;
     private double amount;
     private int term;
     private String document;
@@ -13,15 +13,16 @@ public class Application {
     public Application() {
     }
 
-    public Application(Long idState, Long longTypeId, double amount, int term, String document) {
+    public Application(Long idState, Long longtypeId, double amount, int term, String document) {
         this.idState = idState;
-        this.longTypeId = longTypeId;
+        this.idloanType = longtypeId;
         this.amount = amount;
         this.term = term;
         this.document = document;
     }
 
-    public Application(double amount, int term, String document) {
+    public Application(Long idloanType, double amount, int term, String document) {
+        this.idloanType = idloanType;
         this.amount = amount;
         this.term = term;
         this.document = document;
@@ -43,12 +44,12 @@ public class Application {
         this.idState = idState;
     }
 
-    public Long getLongTypeId() {
-        return longTypeId;
+    public Long getIdloanType() {
+        return idloanType;
     }
 
-    public void setLongTypeId(Long longTypeId) {
-        this.longTypeId = longTypeId;
+    public void setIdloanType(Long idloanType) {
+        this.idloanType = idloanType;
     }
 
     public double getAmount() {

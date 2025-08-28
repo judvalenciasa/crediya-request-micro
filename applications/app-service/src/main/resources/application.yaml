@@ -26,3 +26,16 @@ adapters:
     schema: "public"
     username: "crediya"
     password: "crediya"
+
+springdoc:
+  swagger-ui:
+    url: /openapi/openapi.yaml
+
+
+logging:
+  level:
+    co.com.crediyarequest: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.data.r2dbc: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

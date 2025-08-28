@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-@Table(name="solicitud")
+@Table(name="solicitudes")
 public class ApplicationEntity {
     @Id
     @Column("id_solicitud")
@@ -16,7 +16,7 @@ public class ApplicationEntity {
     private Long idState;
 
     @Column("id_tipo_prestamo")
-    private Long longTypeId;
+    private Long idloanType;
 
     @Column("monto")
     private double amount;
@@ -27,3 +27,4 @@ public class ApplicationEntity {
     @Column("documento_identidad")
     private String document;
 }
+

@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Size;
 
 public record ApplicationRequestDto(
 
+        @NotBlank(message = "Loan Type is required")
+        Long idloanType,
+
         @NotBlank(message = "Amount is required")
         @Digits(integer = 9, fraction = 2, message = "Amount must be a number with up to 9 digits before decimal and exactly 2 decimal places")
         double amount,

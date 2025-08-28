@@ -1,12 +1,13 @@
 package co.com.crediyarequest.model.loantype;
 
 public class LoanType {
-    private Long idlongType;
+    private Long idloanType;
     private String name;
     private double minimumAmount;
     private double maximumAmount;
     private double interestRate;
     private Boolean automaticValidation;
+
 
     public LoanType (){
     }
@@ -19,12 +20,12 @@ public class LoanType {
         this.automaticValidation = automaticValidation;
     }
 
-    public Long getIdlongType() {
-        return idlongType;
+    public Long getIdloanType() {
+        return idloanType;
     }
 
-    public void setIdlongType(Long idlongType) {
-        this.idlongType = idlongType;
+    public void setIdloanType(Long idloanType) {
+        this.idloanType = idloanType;
     }
 
     public String getName() {

@@ -3,6 +3,7 @@ package co.com.crediyarequest.api.handler;
 
 import co.com.crediyarequest.api.errordto.ErrorResponseDto;
 import co.com.crediyarequest.api.exception.ValidationExceptionDto;
+import exceptions.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -17,9 +18,22 @@ public class GlobalExceptionHandler {
 
         if (error instanceof ValidationExceptionDto) {
             return handleCustomValidationException((ValidationExceptionDto) error);
+        }else if (error instanceof BusinessException) {
+            return handleBusinessException((BusinessException) error);
         }
 
         return handleGenericError(error);
+    }
+
+    private Mono<ServerResponse> handleBusinessException(BusinessException ex) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+                ex.getMessage(),
+                "BUS001",
+                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+        );
+        return ServerResponse
+                .status(HttpStatus.BAD_REQUEST)
+                .bodyValue(errorResponse);
     }
 
     private Mono<ServerResponse> handleCustomValidationException(ValidationExceptionDto ex) {

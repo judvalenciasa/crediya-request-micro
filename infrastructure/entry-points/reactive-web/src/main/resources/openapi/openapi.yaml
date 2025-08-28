@@ -1,65 +1,137 @@
 openapi: 3.0.1
 info:
-  title: CrediAuth API
-  description: Documentación de la API
+  title: CrediYa Request API
+  description: API para gestión de solicitudes de préstamos
   version: "1.0"
+  contact:
+    name: CrediYa Team
+    email: support@crediyarequest.com
+servers:
+  - url: http://localhost:8082
+    description: Servidor de desarrollo
 paths:
-  /users:
+  /api/v1/applications:
     post:
-      summary: Crear solicitud
+      summary: Crear nueva solicitud de préstamo
+      description: Crea una nueva solicitud de préstamo validando que el tipo de préstamo exista
+      tags:
+        - Applications
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequestDto'
+              $ref: '#/components/schemas/ApplicationRequestDto'
+            example:
+              idlongType: 1
+              amount: 5000000.00
+              term: 12
+              document: "12345678"
       responses:
-        '201':
-          description: Usuario creado
+        '200':
+          description: Solicitud creada exitosamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponseDto'
+                $ref: '#/components/schemas/ApplicationResponseDto'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Tipo de préstamo no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+
 components:
   schemas:
-    UserRequestDto:
+    ApplicationRequestDto:
       type: object
+      required:
+        - idlongType
+        - amount
+        - term
+        - document
       properties:
-        names:
-          type: string
-        lastNames:
-          type: string
-        email:
-          type: string
-        baseSalary:
+        idlongType:
+          type: integer
+          format: int64
+          description: ID del tipo de préstamo
+          example: 1
+        amount:
           type: number
-        birthDate:
+          format: double
+          description: Monto del préstamo
+          example: 5000000.00
+        term:
+          type: integer
+          description: Plazo del préstamo en meses
+          example: 12
+        document:
           type: string
-          format: date
-        address:
-          type: string
-        phone:
-          type: string
-      required: [names, lastNames, email, baseSalary, birthDate, address, phone]
+          maxLength: 100
+          description: Número de documento de identidad
+          example: "12345678"
 
-    UserResponseDto:
+    ApplicationResponseDto:
       type: object
       properties:
-        id:
-          type: string
-        names:
-          type: string
-        lastNames:
-          type: string
-        email:
-          type: string
-        baseSalary:
+        idRequest:
+          type: integer
+          format: int64
+          description: ID de la solicitud
+          example: 1
+        idState:
+          type: integer
+          format: int64
+          description: ID del estado de la solicitud
+          example: 1
+        longTypeId:
+          type: integer
+          format: int64
+          description: ID del tipo de préstamo
+          example: 1
+        amount:
           type: number
-        birthDate:
+          format: double
+          description: Monto del préstamo
+          example: 5000000.00
+        term:
+          type: integer
+          description: Plazo del préstamo en meses
+          example: 12
+        document:
           type: string
-          format: date
-        address:
+          description: Número de documento de identidad
+          example: "12345678"
+
+    ErrorResponseDto:
+      type: object
+      properties:
+        message:
           type: string
-        phone:
+          description: Mensaje de error
+          example: "El tipo de préstamo con ID 1 no existe"
+        code:
           type: string
-      required: [id, names, lastNames, email, baseSalary, birthDate, address, phone]
+          description: Código de error
+          example: "VAL002"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp del error
+          example: "2025-08-28T13:47:40.777-05:00"
+
+tags:
+  - name: Applications
+    description: Operaciones relacionadas con solicitudes de préstamo

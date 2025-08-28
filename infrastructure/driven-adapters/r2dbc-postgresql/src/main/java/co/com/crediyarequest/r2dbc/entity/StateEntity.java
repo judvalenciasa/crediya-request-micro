@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class StateEntity {
     @Id
     @Column("id_estado")
-    private Long idLoanType;
+    private Long idState;
 
     @Column("nombre")
     private String name;

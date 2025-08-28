@@ -8,6 +8,7 @@ import co.com.crediyarequest.usecase.aplication.IApplicationUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -23,32 +24,22 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Component
-@RequiredArgsConstructor
 public class RouterRest {
-    private final IApplicationUseCase iApplicationUseCase;
-    private final ApplicationMapper userMapper;
-    private final GlobalExceptionHandler globalExceptionHandler;
-    private final Validator validator;
+    private final ApplicationHandler applicationHandler;
 
-    public Mono<ServerResponse> createUser(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(ApplicationRequestDto.class)
-                .flatMap(dto -> {
-                    Errors errors = new BeanPropertyBindingResult(dto, ApplicationRequestDto.class.getName());
-                    validator.validate(dto, errors);
+    public RouterRest(ApplicationHandler applicationHandler) {
+        this.applicationHandler = applicationHandler;
+    }
 
-                    if (errors.hasErrors()) {
-                        return Mono.error(new ValidationExceptionDto(errors));
-                    }
-
-                    return iApplicationUseCase.saveApplication(userMapper.toEntity(dto));
-                })
-                .map(ApplicationMapper::toDto)
-                .flatMap(userResponse ->
+    @Bean
+    public RouterFunction<ServerResponse> userRoutes() {
+        return route()
+                .POST("/api/v1/applications", applicationHandler::createApplication)
+                .GET("/openapi/openapi.yaml", request ->
                         ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(userResponse)
+                                .contentType(MediaType.parseMediaType("application/yaml"))
+                                .bodyValue(new ClassPathResource("openapi/openapi.yaml"))
                 )
-                .onErrorResume(globalExceptionHandler::handleError);
-
+                .build();
     }
 }

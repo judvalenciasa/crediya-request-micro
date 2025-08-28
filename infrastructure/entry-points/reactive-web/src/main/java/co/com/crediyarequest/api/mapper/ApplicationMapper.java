@@ -2,21 +2,21 @@ package co.com.crediyarequest.api.mapper;
 
 import co.com.crediyarequest.api.requestdto.ApplicationRequestDto;
 import co.com.crediyarequest.model.application.Application;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public interface ApplicationMapper {
 
-    static Application toEntity(Application application) {
+    static Application toEntity(ApplicationRequestDto applicationRequestDto) {
         return new Application(
-                application.getAmount(),
-                application.getTerm(),
-                application.getDocument()
+                applicationRequestDto.idloanType(),
+                applicationRequestDto.amount(),
+                applicationRequestDto.term(),
+                applicationRequestDto.document()
         );
     }
 
     static ApplicationRequestDto toDto(Application application) {
         return new ApplicationRequestDto(
+                application.getIdloanType(),
                 application.getAmount(),
                 application.getTerm(),
                 application.getDocument()
