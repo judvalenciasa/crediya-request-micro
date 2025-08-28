@@ -7,6 +7,7 @@ import co.com.crediyarequest.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
+import org.springframework.transaction.reactive.TransactionalOperator;
 
 @Repository
 public class ApplicationReactiveRepositoryAdapter extends ReactiveAdapterOperations<
@@ -15,14 +16,20 @@ public class ApplicationReactiveRepositoryAdapter extends ReactiveAdapterOperati
         Long,
         ApplicationReactiveRepository
         > implements ApplicationRepository/* change for domain repository */ {
-    public ApplicationReactiveRepositoryAdapter(ApplicationReactiveRepository repository, ObjectMapper mapper) {
+
+    private final TransactionalOperator transactionalOperator;
+
+    public ApplicationReactiveRepositoryAdapter(ApplicationReactiveRepository repository, ObjectMapper mapper, TransactionalOperator transactionalOperator) {
 
         super(repository, mapper, d -> mapper.map(d, Application.class/* change for domain model */));
+        this.transactionalOperator = transactionalOperator;
     }
+
 
     @Override
     public Mono<Application> saveApplication(Application application) {
-
-        return save(application);
+        return transactionalOperator.transactional(
+                save(application)
+        );
     }
 }

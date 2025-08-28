@@ -25,7 +25,6 @@ public class ApplicationUseCase implements IApplicationUseCase {
                     }
                 })
                 .onErrorResume(error -> {
-                    // Si hay error en la consulta, lo propagamos
                     return Mono.error(error);
                 });
     }

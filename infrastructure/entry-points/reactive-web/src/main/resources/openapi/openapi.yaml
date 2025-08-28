@@ -58,7 +58,7 @@ components:
     ApplicationRequestDto:
       type: object
       required:
-        - idlongType
+        - idloanType
         - amount
         - term
         - document
