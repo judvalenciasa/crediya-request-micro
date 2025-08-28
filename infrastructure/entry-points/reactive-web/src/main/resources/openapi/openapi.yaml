@@ -1,0 +1,65 @@
+openapi: 3.0.1
+info:
+  title: CrediAuth API
+  description: Documentación de la API
+  version: "1.0"
+paths:
+  /users:
+    post:
+      summary: Crear solicitud
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequestDto'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDto'
+components:
+  schemas:
+    UserRequestDto:
+      type: object
+      properties:
+        names:
+          type: string
+        lastNames:
+          type: string
+        email:
+          type: string
+        baseSalary:
+          type: number
+        birthDate:
+          type: string
+          format: date
+        address:
+          type: string
+        phone:
+          type: string
+      required: [names, lastNames, email, baseSalary, birthDate, address, phone]
+
+    UserResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        names:
+          type: string
+        lastNames:
+          type: string
+        email:
+          type: string
+        baseSalary:
+          type: number
+        birthDate:
+          type: string
+          format: date
+        address:
+          type: string
+        phone:
+          type: string
+      required: [id, names, lastNames, email, baseSalary, birthDate, address, phone]

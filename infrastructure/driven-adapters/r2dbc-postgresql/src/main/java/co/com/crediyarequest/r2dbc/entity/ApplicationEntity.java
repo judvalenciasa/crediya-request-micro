@@ -1,6 +1,5 @@
 package co.com.crediyarequest.r2dbc.entity;
 
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -8,7 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table(name="solicitud")
-public class AplicationEntity {
+public class ApplicationEntity {
     @Id
     @Column("id_solicitud")
     private Long idRequest;

@@ -1,8 +1,9 @@
-package co.com.crediyarequest.model.application.gateways;
+package co.com.crediyarequest.usecase.aplication;
 
 import co.com.crediyarequest.model.application.Application;
 import reactor.core.publisher.Mono;
 
-public interface ApplicationRepository {
+public interface IApplicationUseCase {
+
     Mono<Application> saveApplication(Application application) ;
 }

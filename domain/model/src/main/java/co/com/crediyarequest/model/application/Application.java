@@ -21,6 +21,12 @@ public class Application {
         this.document = document;
     }
 
+    public Application(double amount, int term, String document) {
+        this.amount = amount;
+        this.term = term;
+        this.document = document;
+    }
+
     public Long getIdRequest() {
         return idRequest;
     }
