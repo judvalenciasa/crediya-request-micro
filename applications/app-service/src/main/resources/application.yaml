@@ -31,13 +31,6 @@ springdoc:
   swagger-ui:
     url: /openapi/openapi.yaml
 
-
-# Configuración de logging
-logging:
-  level:
-    co.com.crediyarequest: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.data.r2dbc: DEBUG
-    org.springframework.transaction: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+api:
+  base-path: "/api"
+  version: "/v1"

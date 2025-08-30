@@ -28,8 +28,10 @@ public class ApplicationReactiveRepositoryAdapter extends ReactiveAdapterOperati
 
     @Override
     public Mono<Application> saveApplication(Application application) {
-        return transactionalOperator.transactional(
-                save(application)
-        );
+        ApplicationEntity entity = mapper.map(application, ApplicationEntity.class);
+        return transactionalOperator.transactional(repository.save(entity)
+                .map(savedEntity -> mapper.map(savedEntity, Application.class)));
     }
+
+
 }

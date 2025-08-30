@@ -1,31 +1,15 @@
 package co.com.crediyarequest.model.application;
-//import lombok.NoArgsConstructor;
 
 
 public class Application {
     private Long idRequest;
-    private Long idState;
-    private Long idloanType;
+    private Long stateId;
+    private Long loantypeId;
     private double amount;
     private int term;
     private String document;
 
     public Application() {
-    }
-
-    public Application(Long idState, Long longtypeId, double amount, int term, String document) {
-        this.idState = idState;
-        this.idloanType = longtypeId;
-        this.amount = amount;
-        this.term = term;
-        this.document = document;
-    }
-
-    public Application(Long idloanType, double amount, int term, String document) {
-        this.idloanType = idloanType;
-        this.amount = amount;
-        this.term = term;
-        this.document = document;
     }
 
     public Long getIdRequest() {
@@ -36,20 +20,20 @@ public class Application {
         this.idRequest = idRequest;
     }
 
-    public Long getIdState() {
-        return idState;
+    public Long getStateId() {
+        return stateId;
     }
 
-    public void setIdState(Long idState) {
-        this.idState = idState;
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
     }
 
-    public Long getIdloanType() {
-        return idloanType;
+    public Long getLoantypeId() {
+        return loantypeId;
     }
 
-    public void setIdloanType(Long idloanType) {
-        this.idloanType = idloanType;
+    public void setLoantypeId(Long loantypeId) {
+        this.loantypeId = loantypeId;
     }
 
     public double getAmount() {

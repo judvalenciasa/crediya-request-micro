@@ -5,6 +5,9 @@ public class State {
     private String name;
     private String description;
 
+    public State() {
+    }
+
     public State(String name, String description) {
         this.name = name;
         this.description = description;

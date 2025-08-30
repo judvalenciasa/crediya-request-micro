@@ -3,102 +3,72 @@ package co.com.crediyarequest.usecase.aplication;
 
 import co.com.crediyarequest.model.application.Application;
 import co.com.crediyarequest.model.application.gateways.ApplicationRepository;
+import co.com.crediyarequest.model.loantype.LoanType;
 import co.com.crediyarequest.model.loantype.gateways.LoanTypeRepository;
-import exceptions.BusinessException;
+import co.com.crediyarequest.model.state.State;
+import co.com.crediyarequest.model.state.gateways.StateRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+class ApplicationUseCaseTest {
 
-@ExtendWith(MockitoExtension.class)
-public class ApplicationUseCaseTest {
-
+    @Mock
     private ApplicationRepository applicationRepository;
+    @Mock
     private LoanTypeRepository loanTypeRepository;
+    @Mock
+    private StateRepository stateRepository;
+
     private ApplicationUseCase applicationUseCase;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         applicationRepository = Mockito.mock(ApplicationRepository.class);
         loanTypeRepository = Mockito.mock(LoanTypeRepository.class);
-        applicationUseCase = new ApplicationUseCase(applicationRepository, loanTypeRepository);
+        stateRepository = Mockito.mock(StateRepository.class);
+        applicationUseCase = new ApplicationUseCase(applicationRepository, loanTypeRepository, stateRepository);
     }
 
     @Test
     void When_LoanTypeExists_Expect_ApplicationToBeSavedCorrectly() {
         // Given
         Application application = new Application();
-        application.setIdloanType(1L);
-        application.setIdState(0L);
+        application.setLoantypeId(0L);
+        application.setStateId(0L);
         application.setAmount(5000000.0);
         application.setTerm(12);
         application.setDocument("12345678");
 
         Application savedApplication = new Application();
         savedApplication.setIdRequest(1L);
-        savedApplication.setIdloanType(1L);
-        savedApplication.setIdState(1L);
+        savedApplication.setLoantypeId(2L);
+        savedApplication.setStateId(1L);
         savedApplication.setAmount(5000000.0);
         savedApplication.setTerm(12);
         savedApplication.setDocument("12345678");
 
-        when(loanTypeRepository.existsByidlongType(1L)).thenReturn(Mono.just(true));
-        when(applicationRepository.saveApplication(any(Application.class))).thenReturn(Mono.just(savedApplication));
+        LoanType loanType = new LoanType();
+        loanType.setIdloanType(2L);
+        loanType.setName("VEHICULAR");
 
+        State state = new State();
+        state.setIdState(1L);
+        state.setName("Pendiente de revisión");
 
-        Mono<Application> result = applicationUseCase.saveApplication(application);
+        // When
+        Mockito.when(loanTypeRepository.findByAmountRange(5000000.0)).thenReturn(Mono.just(loanType));
+        Mockito.when(stateRepository.findByName("Pendiente de revisión")).thenReturn(Mono.just(state));
+        Mockito.when(applicationRepository.saveApplication(Mockito.any(Application.class))).thenReturn(Mono.just(savedApplication));
 
-
-        StepVerifier.create(result)
-                .expectNextMatches(savedApp ->
-                        savedApp.getIdRequest() != null &&
-                                savedApp.getIdRequest().equals(1L) &&
-                                savedApp.getIdloanType().equals(1L) &&
-                                savedApp.getIdState().equals(1L) &&
-                                savedApp.getAmount() == 5000000.0 &&
-                                savedApp.getTerm() == 12 &&
-                                savedApp.getDocument().equals("12345678")
-                )
+        // Then
+        StepVerifier.create(applicationUseCase.saveApplication(application))
+                .expectNext(savedApplication)
                 .verifyComplete();
-
-        verify(loanTypeRepository).existsByidlongType(1L);
-        verify(applicationRepository).saveApplication(any(Application.class));
     }
-
-    @Test
-    void When_LoanTypeNoExists_Expect_ExceptionBussines() {
-        // Given
-        Application application = new Application();
-        application.setIdloanType(1L);
-        application.setIdState(0L);
-        application.setAmount(5000000.0);
-        application.setTerm(12);
-        application.setDocument("12345678");
-
-        when(loanTypeRepository.existsByidlongType(1L)).thenReturn(Mono.just(false));
-
-        Mono<Application> result = applicationUseCase.saveApplication(application);
-
-/*
-        StepVerifier.create(result)
-                .expectErrorMatches(throwable ->
-                        throwable instanceof BusinessException &&
-                                throwable.getMessage().contains("El tipo de préstamo con ID " + application.getIdloanType() + " no existe")
-                )
-                .verify();
-                */
-
-    }
-
-
-
 }
+
+

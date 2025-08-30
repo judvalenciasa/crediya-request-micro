@@ -13,7 +13,14 @@ paths:
   /api/v1/applications:
     post:
       summary: Crear nueva solicitud de préstamo
-      description: Crea una nueva solicitud de préstamo validando que el tipo de préstamo exista
+      description: |
+        Crea una nueva solicitud de préstamo. El tipo de préstamo se determina automáticamente 
+        basado en el monto solicitado:
+        - PERSONAL: $10,000 - $1,000,000
+        - VEHICULAR: $1,000,001 - $5,000,000  
+        - HIPOTECARIO: $10,000,000 - $14,999,999
+        
+        El estado se asigna automáticamente como "Pendiente de revisión".
       tags:
         - Applications
       requestBody:
@@ -21,9 +28,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApplicationRequestDto'
+              $ref: '#/components/schemas/ApplicationCreateRequestDto'
             example:
-              idlongType: 1
               amount: 5000000.00
               term: 12
               document: "12345678"
@@ -33,74 +39,90 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationResponseDto'
+                $ref: '#/components/schemas/ApplicationCreateResponseDto'
+              example:
+                idRequest: 1
+                stateId: 1
+                loantypeId: 2
+                amount: 5000000.00
+                term: 12
+                document: "12345678"
         '400':
-          description: Datos de entrada inválidos
+          description: Datos de entrada inválidos o monto fuera de rango
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDto'
-        '404':
-          description: Tipo de préstamo no encontrado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDto'
+              example:
+                message: "No se encontró un tipo de préstamo válido para el monto: 15000000"
+                code: "BUS001"
+                timestamp: "2025-08-28T13:47:40.777-05:00"
         '500':
           description: Error interno del servidor
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDto'
+              example:
+                message: "No se encontró el estado 'Pendiente de revisión'"
+                code: "BUS001"
+                timestamp: "2025-08-28T13:47:40.777-05:00"
 
 components:
   schemas:
-    ApplicationRequestDto:
+    ApplicationCreateRequestDto:
       type: object
       required:
-        - idloanType
         - amount
         - term
         - document
       properties:
-        idlongType:
-          type: integer
-          format: int64
-          description: ID del tipo de préstamo
-          example: 1
         amount:
           type: number
           format: double
-          description: Monto del préstamo
+          minimum: 10000
+          maximum: 14999999
+          description: |
+            Monto del préstamo. Determina automáticamente el tipo de préstamo:
+            - $10,000 - $1,000,000: PERSONAL
+            - $1,000,001 - $5,000,000: VEHICULAR  
+            - $10,000,000 - $14,999,999: HIPOTECARIO
           example: 5000000.00
         term:
           type: integer
+          minimum: 1
+          maximum: 360
           description: Plazo del préstamo en meses
           example: 12
         document:
           type: string
           maxLength: 100
+          minLength: 1
           description: Número de documento de identidad
           example: "12345678"
 
-    ApplicationResponseDto:
+    ApplicationCreateResponseDto:
       type: object
       properties:
         idRequest:
           type: integer
           format: int64
-          description: ID de la solicitud
+          description: ID de la solicitud generado automáticamente
           example: 1
-        idState:
+        stateId:
           type: integer
           format: int64
-          description: ID del estado de la solicitud
+          description: ID del estado (siempre 1 = "Pendiente de revisión")
           example: 1
-        longTypeId:
+        loantypeId:
           type: integer
           format: int64
-          description: ID del tipo de préstamo
-          example: 1
+          description: |
+            ID del tipo de préstamo determinado automáticamente:
+            - 1: PERSONAL
+            - 2: VEHICULAR
+            - 3: HIPOTECARIO
+          example: 2
         amount:
           type: number
           format: double
@@ -120,12 +142,12 @@ components:
       properties:
         message:
           type: string
-          description: Mensaje de error
-          example: "El tipo de préstamo con ID 1 no existe"
+          description: Mensaje de error descriptivo
+          example: "No se encontró un tipo de préstamo válido para el monto: 15000000"
         code:
           type: string
           description: Código de error
-          example: "VAL002"
+          example: "BUS001"
         timestamp:
           type: string
           format: date-time

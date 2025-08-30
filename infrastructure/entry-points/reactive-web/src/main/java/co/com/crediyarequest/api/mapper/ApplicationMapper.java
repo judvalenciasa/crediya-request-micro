@@ -1,26 +1,17 @@
 package co.com.crediyarequest.api.mapper;
 
-import co.com.crediyarequest.api.requestdto.ApplicationRequestDto;
-import co.com.crediyarequest.model.application.Application;
 
+import co.com.crediyarequest.api.requestdto.application.ApplicationCreateRequestDto;
+import co.com.crediyarequest.api.responsedto.aplication.ApplicationCreateResponseDto;
+import co.com.crediyarequest.model.application.Application;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
 public interface ApplicationMapper {
 
-    static Application toEntity(ApplicationRequestDto applicationRequestDto) {
-        return new Application(
-                applicationRequestDto.idloanType(),
-                applicationRequestDto.amount(),
-                applicationRequestDto.term(),
-                applicationRequestDto.document()
-        );
-    }
+    Application toEntity(ApplicationCreateRequestDto dto);
 
-    static ApplicationRequestDto toDto(Application application) {
-        return new ApplicationRequestDto(
-                application.getIdloanType(),
-                application.getAmount(),
-                application.getTerm(),
-                application.getDocument()
-        );
-    }
+    ApplicationCreateResponseDto toDto(Application application);
+
 }
 

@@ -13,10 +13,10 @@ public class ApplicationEntity {
     private Long idRequest;
 
     @Column("id_estado")
-    private Long idState;
+    private Long stateId;
 
     @Column("id_tipo_prestamo")
-    private Long idloanType;
+    private Long loantypeId;
 
     @Column("monto")
     private double amount;
