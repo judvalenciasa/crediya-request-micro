@@ -7,7 +7,7 @@ info:
     name: CrediYa Team
     email: support@crediyarequest.com
 servers:
-  - url: http://localhost:8082
+  - url: http://localhost:8083
     description: Servidor de desarrollo
 paths:
   /api/v1/applications:

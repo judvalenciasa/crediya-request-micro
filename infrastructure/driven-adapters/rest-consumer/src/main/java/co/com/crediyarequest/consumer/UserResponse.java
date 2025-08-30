@@ -11,8 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class ObjectResponse {
+public class UserResponse {
 
-    private String state;
-
+    private String documentNumber;
+    private String message;
+    private Boolean exists;
 }

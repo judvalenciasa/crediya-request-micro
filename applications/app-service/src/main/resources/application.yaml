@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
 spring:
   application:
     name: "crediyarequest"
@@ -20,7 +20,7 @@ management:
     circuitbreakers:
       enabled: true
 cors:
-  allowed-origins: "http://localhost:4200,http://localhost:8080"
+  allowed-origins: "http://localhost:4200,http://localhost:8080, http://localhost:8083"
 adapters:
   r2dbc:
     host: "localhost"
@@ -38,10 +38,19 @@ api:
 adapter:
   restconsumer:
     timeout: 5000
-    url: "http://localhost:8082/api/v1/user"
+    url: "http://localhost:8082"
 resilience4j:
   circuitbreaker:
     instances:
+      userExists:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: "2s"
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: "10s"
       testGet:
         registerHealthIndicator: true
         failureRateThreshold: 50

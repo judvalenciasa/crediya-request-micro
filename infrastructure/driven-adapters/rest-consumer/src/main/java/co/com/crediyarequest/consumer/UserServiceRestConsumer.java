@@ -5,6 +5,7 @@ import exceptions.BusinessException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -18,17 +19,30 @@ public class UserServiceRestConsumer implements UserServiceGateway {
     @CircuitBreaker(name = "userExists", fallbackMethod = "existsByDocumentFallback")
     @Override
     public Mono<Boolean> existsByDocument(String document) {
+        log.info("=== START: Calling user service for document: {} ===", document);
+
         return client.get()
-                .uri("/users/exists/{document}", document)
+                .uri("/api/v1/users/{documentNumber}", document)
                 .retrieve()
-                .onStatus(status -> status.is4xxClientError(),
-                        response -> Mono.error(new BusinessException("Usuario no encontrado: " + document)))
-                .onStatus(status -> status.is5xxServerError(),
-                        response -> Mono.error(new BusinessException("Error en el servicio de usuarios")))
-                .bodyToMono(Boolean.class)
-                .doOnNext(exists -> log.info("User exists check for document {}: {}", document, exists))
-                .doOnError(error -> log.error("Error checking user existence for document {}: {}", document, error.getMessage()))
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        response -> {
+                            log.error("=== 4xx ERROR: User service returned 4xx for document: {} ===", document);
+                            return Mono.error(new BusinessException("Usuario no encontrado: " + document));
+                        })
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        response -> {
+                            log.error("=== 5xx ERROR: User service returned 5xx for document: {} ===", document);
+                            return Mono.error(new BusinessException("Error en el servicio de usuarios"));
+                        })
+                .bodyToMono(UserResponse.class)
+                .map(response -> {
+                    log.info("=== SUCCESS: User service response for document {}: {} ===", document, response);
+                    return response.getExists();
+                })
+                .doOnNext(exists -> log.info("=== RESULT: User exists check for document {}: {} ===", document, exists))
+                .doOnError(error -> log.error("=== ERROR: Error checking user existence for document {}: {} ===", document, error.getMessage()))
                 .onErrorResume(error -> {
+                    log.error("=== ERROR RESUME: Error in user service call for document {}: {} ===", document, error.getMessage());
                     if (error instanceof BusinessException) {
                         return Mono.error(error);
                     }
@@ -36,7 +50,6 @@ public class UserServiceRestConsumer implements UserServiceGateway {
                 });
     }
 
-    // Método fallback cuando el circuit breaker está abierto
     public Mono<Boolean> existsByDocumentFallback(String document, Exception ex) {
         log.warn("Circuit breaker open for user exists check, document: {}, error: {}", document, ex.getMessage());
         return Mono.error(new BusinessException("Servicio de usuarios no disponible temporalmente"));
