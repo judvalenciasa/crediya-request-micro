@@ -30,7 +30,7 @@ class ApplicationUseCaseTest {
         applicationRepository = Mockito.mock(ApplicationRepository.class);
         loanTypeRepository = Mockito.mock(LoanTypeRepository.class);
         stateRepository = Mockito.mock(StateRepository.class);
-        applicationUseCase = new ApplicationUseCase(applicationRepository, loanTypeRepository, stateRepository);
+        applicationUseCase = new ApplicationUseCase(applicationRepository, loanTypeRepository, stateRepository, null);
     }
 
     @Test
