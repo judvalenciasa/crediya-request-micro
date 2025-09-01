@@ -12,6 +12,7 @@ import exceptions.BusinessException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
+
 @RequiredArgsConstructor
 public class ApplicationUseCase implements IApplicationUseCase {
     private final ApplicationRepository applicationRepository;
@@ -20,9 +21,10 @@ public class ApplicationUseCase implements IApplicationUseCase {
     private final UserServiceGateway userServiceGateway;
 
 
+
     @Override
     public Mono<Application> saveApplication(Application application) {
-        return validateUserExists(application.getDocument())
+        return validateUserExistsService(application.getDocument())
                 .then(Mono.zip(
                         determineLoanType(application.getAmount()),
                         findPendingReviewState()
@@ -38,10 +40,10 @@ public class ApplicationUseCase implements IApplicationUseCase {
                 });
     }
 
-    private Mono<Void> validateUserExists(String document) {
+    private Mono<Void> validateUserExistsService(String document) {
         return userServiceGateway.existsByDocument(document)
                 .flatMap(exists -> {
-                    if (exists) {
+                    if (Boolean.TRUE.equals(exists)) {
                         return Mono.empty();
                     } else {
                         return Mono.error(new BusinessException("El usuario con documento " + document + " no existe"));

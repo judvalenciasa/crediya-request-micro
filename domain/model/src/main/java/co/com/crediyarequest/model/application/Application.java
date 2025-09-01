@@ -1,6 +1,9 @@
 package co.com.crediyarequest.model.application;
 
 
+import lombok.Builder;
+
+@Builder
 public class Application {
     private Long idRequest;
     private Long stateId;
@@ -9,8 +12,6 @@ public class Application {
     private int term;
     private String document;
 
-    public Application() {
-    }
 
     public Long getIdRequest() {
         return idRequest;

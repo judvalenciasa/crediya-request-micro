@@ -1,17 +1,12 @@
 package co.com.crediyarequest.model.state;
 
+import lombok.Builder;
+
+@Builder
 public class State {
     private Long idState;
     private String name;
     private String description;
-
-    public State() {
-    }
-
-    public State(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
 
     public String getName() {
         return name;

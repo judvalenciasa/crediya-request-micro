@@ -142,17 +142,20 @@ components:
       properties:
         message:
           type: string
-          description: Mensaje de error descriptivo
-          example: "No se encontró un tipo de préstamo válido para el monto: 15000000"
+          description: "Error message"
+          example: "Validation failed"
         code:
           type: string
-          description: Código de error
-          example: "BUS001"
+          description: "Error code"
+          example: "VALIDATION_ERROR"
         timestamp:
           type: string
-          format: date-time
-          description: Timestamp del error
-          example: "2025-08-28T13:47:40.777-05:00"
+          description: "Timestamp when error occurred"
+          example: "2024-01-15T10:30:00Z"
+      required:
+        - message
+        - code
+        - timestamp
 
 tags:
   - name: Applications
