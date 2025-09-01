@@ -1,0 +1,30 @@
+package co.com.crediyarequest.r2dbc.entity;
+
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+@Data
+@Table(name="solicitudes")
+public class ApplicationEntity {
+    @Id
+    @Column("id_solicitud")
+    private Long idRequest;
+
+    @Column("id_estado")
+    private Long stateId;
+
+    @Column("id_tipo_prestamo")
+    private Long loantypeId;
+
+    @Column("monto")
+    private double amount;
+
+    @Column("plazo")
+    private int term;
+
+    @Column("documento_identidad")
+    private String document;
+}
+

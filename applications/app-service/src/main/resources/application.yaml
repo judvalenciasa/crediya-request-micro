@@ -1,14 +1,71 @@
-##Spring Configuration
 server:
-  port: 8080
+  port: 8083
 spring:
   application:
-    name: crediyarequest
+    name: "crediyarequest"
   devtools:
     add-properties: false
-  h2:
-    console:
-      enabled: true
-      path: /h2
   profiles:
-    include:
+    include: null
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
+cors:
+  allowed-origins: "http://localhost:4200,http://localhost:8080, http://localhost:8083"
+adapters:
+  r2dbc:
+    host: "localhost"
+    port: 5432
+    database: "crediya_request"
+    schema: "public"
+    username: "crediya"
+    password: "crediya"
+springdoc:
+  swagger-ui:
+    url: "/openapi/openapi.yaml"
+api:
+  base-path: "/api"
+  version: "/v1"
+adapter:
+  restconsumer:
+    timeout: 5000
+    url: "http://localhost:8082"
+resilience4j:
+  circuitbreaker:
+    instances:
+      userExists:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: "2s"
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: "10s"
+      testGet:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: "2s"
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: "10s"
+      testPost:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: "2s"
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: "10s"

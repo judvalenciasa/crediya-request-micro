@@ -1,0 +1,162 @@
+openapi: 3.0.1
+info:
+  title: CrediYa Request API
+  description: API para gestión de solicitudes de préstamos
+  version: "1.0"
+  contact:
+    name: CrediYa Team
+    email: support@crediyarequest.com
+servers:
+  - url: http://localhost:8083
+    description: Servidor de desarrollo
+paths:
+  /api/v1/applications:
+    post:
+      summary: Crear nueva solicitud de préstamo
+      description: |
+        Crea una nueva solicitud de préstamo. El tipo de préstamo se determina automáticamente 
+        basado en el monto solicitado:
+        - PERSONAL: $10,000 - $1,000,000
+        - VEHICULAR: $1,000,001 - $5,000,000  
+        - HIPOTECARIO: $10,000,000 - $14,999,999
+        
+        El estado se asigna automáticamente como "Pendiente de revisión".
+      tags:
+        - Applications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationCreateRequestDto'
+            example:
+              amount: 5000000.00
+              term: 12
+              document: "12345678"
+      responses:
+        '200':
+          description: Solicitud creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationCreateResponseDto'
+              example:
+                idRequest: 1
+                stateId: 1
+                loantypeId: 2
+                amount: 5000000.00
+                term: 12
+                document: "12345678"
+        '400':
+          description: Datos de entrada inválidos o monto fuera de rango
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+              example:
+                message: "No se encontró un tipo de préstamo válido para el monto: 15000000"
+                code: "BUS001"
+                timestamp: "2025-08-28T13:47:40.777-05:00"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+              example:
+                message: "No se encontró el estado 'Pendiente de revisión'"
+                code: "BUS001"
+                timestamp: "2025-08-28T13:47:40.777-05:00"
+
+components:
+  schemas:
+    ApplicationCreateRequestDto:
+      type: object
+      required:
+        - amount
+        - term
+        - document
+      properties:
+        amount:
+          type: number
+          format: double
+          minimum: 10000
+          maximum: 14999999
+          description: |
+            Monto del préstamo. Determina automáticamente el tipo de préstamo:
+            - $10,000 - $1,000,000: PERSONAL
+            - $1,000,001 - $5,000,000: VEHICULAR  
+            - $10,000,000 - $14,999,999: HIPOTECARIO
+          example: 5000000.00
+        term:
+          type: integer
+          minimum: 1
+          maximum: 360
+          description: Plazo del préstamo en meses
+          example: 12
+        document:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: Número de documento de identidad
+          example: "12345678"
+
+    ApplicationCreateResponseDto:
+      type: object
+      properties:
+        idRequest:
+          type: integer
+          format: int64
+          description: ID de la solicitud generado automáticamente
+          example: 1
+        stateId:
+          type: integer
+          format: int64
+          description: ID del estado (siempre 1 = "Pendiente de revisión")
+          example: 1
+        loantypeId:
+          type: integer
+          format: int64
+          description: |
+            ID del tipo de préstamo determinado automáticamente:
+            - 1: PERSONAL
+            - 2: VEHICULAR
+            - 3: HIPOTECARIO
+          example: 2
+        amount:
+          type: number
+          format: double
+          description: Monto del préstamo
+          example: 5000000.00
+        term:
+          type: integer
+          description: Plazo del préstamo en meses
+          example: 12
+        document:
+          type: string
+          description: Número de documento de identidad
+          example: "12345678"
+
+    ErrorResponseDto:
+      type: object
+      properties:
+        message:
+          type: string
+          description: "Error message"
+          example: "Validation failed"
+        code:
+          type: string
+          description: "Error code"
+          example: "VALIDATION_ERROR"
+        timestamp:
+          type: string
+          description: "Timestamp when error occurred"
+          example: "2024-01-15T10:30:00Z"
+      required:
+        - message
+        - code
+        - timestamp
+
+tags:
+  - name: Applications
+    description: Operaciones relacionadas con solicitudes de préstamo
