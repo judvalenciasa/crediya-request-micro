@@ -17,7 +17,7 @@ public final class ErrorConstants {
     }
 
     public static final class Messages {
-        public static final String GENERIC_ERROR = "Ha ocurrido un error inesperado: ";
+        public static final String GENERIC_ERROR = "An unexpected error has occurred: ";
 
         private Messages() {
             // Constructor privado para evitar instanciación

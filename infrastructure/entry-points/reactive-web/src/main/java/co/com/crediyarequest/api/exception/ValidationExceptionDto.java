@@ -1,7 +1,9 @@
 package co.com.crediyarequest.api.exception;
 
+import lombok.Getter;
 import org.springframework.validation.Errors;
 
+@Getter
 public class ValidationExceptionDto extends RuntimeException{
     private final Errors errors;
 
@@ -10,7 +12,4 @@ public class ValidationExceptionDto extends RuntimeException{
         this.errors = errors;
     }
 
-    public Errors getErrors() {
-        return errors;
-    }
 }

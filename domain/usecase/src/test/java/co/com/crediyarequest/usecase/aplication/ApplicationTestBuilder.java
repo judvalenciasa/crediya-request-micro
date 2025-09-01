@@ -41,7 +41,7 @@ public class ApplicationTestBuilder {
     }
 
     public Application build() {
-        Application application = Application.builder()
+        return Application.builder()
                 .idRequest(idRequest)
                 .stateId(stateId)
                 .loantypeId(loantypeId)
@@ -49,8 +49,6 @@ public class ApplicationTestBuilder {
                 .term(term)
                 .document(document)
                 .build();
-
-        return application;
     }
 
     public static ApplicationTestBuilder anApplication() {

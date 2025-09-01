@@ -46,7 +46,7 @@ public class ApplicationUseCase implements IApplicationUseCase {
                     if (Boolean.TRUE.equals(exists)) {
                         return Mono.empty();
                     } else {
-                        return Mono.error(new BusinessException("El usuario con documento " + document + " no existe"));
+                        return Mono.error(new BusinessException("The user with document" + document + " does not exist"));
                     }
                 });
     }
@@ -54,12 +54,12 @@ public class ApplicationUseCase implements IApplicationUseCase {
     private Mono<Long> determineLoanType(double amount) {
         return loanTypeRepository.findByAmountRange(amount)
                 .map(LoanType::getIdloanType)
-                .switchIfEmpty(Mono.error(new BusinessException("No se encontró un tipo de préstamo válido para el monto: " + amount)));
+                .switchIfEmpty(Mono.error(new BusinessException("No valid loan type was found for the amount: " + amount)));
     }
 
     private Mono<Long> findPendingReviewState() {
         return stateRepository.findByName("Pendiente de revisión")
                 .map(State::getIdState)
-                .switchIfEmpty(Mono.error(new BusinessException("No se encontró el estado 'Pendiente de revisión'")));
+                .switchIfEmpty(Mono.error(new BusinessException("'Pending Review' status not found")));
     }
 }
