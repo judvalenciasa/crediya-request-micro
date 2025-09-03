@@ -11,6 +11,19 @@ public class LoanType {
     private double interestRate;
     private Boolean automaticValidation;
 
+    public LoanType(){
+
+    }
+
+    public LoanType(Long idloanType, String name, double minimumAmount, double maximumAmount, double interestRate, Boolean automaticValidation) {
+        this.idloanType = idloanType;
+        this.name = name;
+        this.minimumAmount = minimumAmount;
+        this.maximumAmount = maximumAmount;
+        this.interestRate = interestRate;
+        this.automaticValidation = automaticValidation;
+    }
+
     public Long getIdloanType() {
         return idloanType;
     }

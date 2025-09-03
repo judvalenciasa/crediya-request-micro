@@ -8,6 +8,15 @@ public class State {
     private String name;
     private String description;
 
+    public State() {
+    }
+
+    public State(Long idState, String name, String description) {
+        this.idState = idState;
+        this.name = name;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }
