@@ -12,6 +12,18 @@ public class Application {
     private int term;
     private String document;
 
+    public Application() {
+
+    }
+
+    public Application(Long idRequest, Long stateId, Long loantypeId, double amount, int term, String document) {
+        this.idRequest = idRequest;
+        this.stateId = stateId;
+        this.loantypeId = loantypeId;
+        this.amount = amount;
+        this.term = term;
+        this.document = document;
+    }
 
     public Long getIdRequest() {
         return idRequest;

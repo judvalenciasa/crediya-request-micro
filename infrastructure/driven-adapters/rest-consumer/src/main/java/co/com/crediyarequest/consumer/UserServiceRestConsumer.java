@@ -22,7 +22,7 @@ public class UserServiceRestConsumer implements UserServiceGateway {
         log.info("=== START: Calling user service for document: {} ===", document);
 
         return client.get()
-                .uri("/api/v1/users /{documentNumber}", document)
+                .uri("/api/v1/users/{documentNumber}", document)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError,
                         response -> {

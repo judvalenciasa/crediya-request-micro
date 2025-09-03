@@ -18,7 +18,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class RestConsumerConfig {
 
     private final String url;
-
     private final int timeout;
 
     public RestConsumerConfig(@Value("${adapter.restconsumer.url}") String url,
@@ -37,9 +36,7 @@ public class RestConsumerConfig {
     }
 
     private ClientHttpConnector getClientHttpConnector() {
-        /*
-        IF YO REQUIRE APPEND SSL CERTIFICATE SELF SIGNED: this should be in the default cacerts trustore
-        */
+   
         return new ReactorClientHttpConnector(HttpClient.create()
                 .compress(true)
                 .keepAlive(true)
