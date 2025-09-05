@@ -5,6 +5,7 @@ import exceptions.BusinessException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,11 +19,12 @@ public class UserServiceRestConsumer implements UserServiceGateway {
 
     @CircuitBreaker(name = "userExists", fallbackMethod = "existsByDocumentFallback")
     @Override
-    public Mono<Boolean> existsByDocument(String document) {
+    public Mono<Boolean> existsByDocument(String document, String token) {
         log.info("=== START: Calling user service for document: {} ===", document);
 
         return client.get()
                 .uri("/api/v1/users/{documentNumber}", document)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError,
                         response -> {

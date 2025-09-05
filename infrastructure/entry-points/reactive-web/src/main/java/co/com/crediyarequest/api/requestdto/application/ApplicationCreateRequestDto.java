@@ -15,6 +15,9 @@ public record ApplicationCreateRequestDto(
 
         @NotBlank(message = "Document is required")
         @Size(max = 100, message = "Name must not exceed 20 characters")
-        String document
+        String document,
+
+        @NotBlank(message = "token is required")
+        String token
 ) {
 }

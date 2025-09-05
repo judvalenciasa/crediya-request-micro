@@ -33,6 +33,7 @@ paths:
               amount: 5000000.00
               term: 12
               document: "12345678"
+              token: "asdasda.asdasdasd.asdasdasd"
       responses:
         '200':
           description: Solicitud creada exitosamente
@@ -99,7 +100,7 @@ components:
           maxLength: 100
           minLength: 1
           description: Número de documento de identidad
-          example: "12345678"
+          example: "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoyMiwiaWF0IjoxNzU3MDQzMzcyLCJleHAiOjE5Mjk4NDMzNzJ9.nXbn8MIAKySeA8hwDULKYjRfVj6HU1Z9DFk1EXuMXc5ri-e07SYRUx6MgNF5tKEjU9rbEMjpTfugBtrQTSPkbQ"
 
     ApplicationCreateResponseDto:
       type: object

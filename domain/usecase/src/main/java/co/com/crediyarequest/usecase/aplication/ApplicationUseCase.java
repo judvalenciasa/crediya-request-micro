@@ -24,7 +24,7 @@ public class ApplicationUseCase implements IApplicationUseCase {
 
     @Override
     public Mono<Application> saveApplication(Application application) {
-        return validateUserExistsService(application.getDocument())
+        return validateUserExistsService(application)
                 .then(Mono.zip(
                         determineLoanType(application.getAmount()),
                         findPendingReviewState()
@@ -40,13 +40,13 @@ public class ApplicationUseCase implements IApplicationUseCase {
                 });
     }
 
-    private Mono<Void> validateUserExistsService(String document) {
-        return userServiceGateway.existsByDocument(document)
+    private Mono<Void> validateUserExistsService(Application application) {
+        return userServiceGateway.existsByDocument(application.getDocument(), application.getToken())
                 .flatMap(exists -> {
                     if (Boolean.TRUE.equals(exists)) {
                         return Mono.empty();
                     } else {
-                        return Mono.error(new BusinessException("The user with document" + document + " does not exist"));
+                        return Mono.error(new BusinessException("The user with document" + application.getDocument() + " does not exist"));
                     }
                 });
     }

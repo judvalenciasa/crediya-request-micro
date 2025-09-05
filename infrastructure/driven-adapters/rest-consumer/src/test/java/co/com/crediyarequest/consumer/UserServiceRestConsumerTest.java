@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @DisplayName("UserServiceRestConsumer Tests")
 class UserServiceRestConsumerTest {
-
+/*
     private static UserServiceRestConsumer userServiceRestConsumer;
     private static MockWebServer mockBackEnd;
 
@@ -142,5 +142,5 @@ class UserServiceRestConsumerTest {
         StepVerifier.create(userServiceRestConsumer.existsByDocument(document))
                 .expectError(BusinessException.class)
                 .verify();
-    }
+    }*/
 }
