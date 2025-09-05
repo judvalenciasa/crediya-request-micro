@@ -9,6 +9,11 @@ info:
 servers:
   - url: http://localhost:8083
     description: Servidor de desarrollo
+
+# Configuración de seguridad
+security:
+  - BearerAuth: []
+
 paths:
   /api/v1/applications:
     post:
@@ -21,8 +26,13 @@ paths:
         - HIPOTECARIO: $10,000,000 - $14,999,999
         
         El estado se asigna automáticamente como "Pendiente de revisión".
+        
+        **Autenticación requerida**: Token JWT válido en header Authorization y en el body.
+        **Roles permitidos**: Cliente (roleId: 22)
       tags:
         - Applications
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -33,7 +43,7 @@ paths:
               amount: 5000000.00
               term: 12
               document: "12345678"
-              token: "asdasda.asdasdasd.asdasdasd"
+              token: "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoyMiwiaWF0IjoxNzU3MDQzMzcyLCJleHAiOjE5Mjk4NDMzNzJ9.nXbn8MIAKySeA8hwDULKYjRfVj6HU1Z9DFk1EXuMXc5ri-e07SYRUx6MgNF5tKEjU9rbEMjpTfugBtrQTSPkbQ"
       responses:
         '200':
           description: Solicitud creada exitosamente
@@ -58,6 +68,28 @@ paths:
                 message: "No se encontró un tipo de préstamo válido para el monto: 15000000"
                 code: "BUS001"
                 timestamp: "2025-08-28T13:47:40.777-05:00"
+        '401':
+          description: Token de autorización requerido o inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationErrorDto'
+              examples:
+                missing_token:
+                  summary: Token faltante
+                  value:
+                    error: "Token de autorización requerido"
+                    status: 401
+                invalid_token:
+                  summary: Token inválido
+                  value:
+                    error: "Token inválido"
+                    status: 401
+                access_denied:
+                  summary: Sin permisos
+                  value:
+                    error: "Acceso denegado: sin permisos"
+                    status: 401
         '500':
           description: Error interno del servidor
           content:
@@ -70,6 +102,21 @@ paths:
                 timestamp: "2025-08-28T13:47:40.777-05:00"
 
 components:
+  # Configuración de seguridad
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Token JWT requerido para autenticación. 
+        Debe incluir el claim 'role' con uno de los siguientes valores:
+        - 21: Administrador
+        - 22: Cliente  
+        - 23: Asesor
+        
+        Ejemplo: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoyMiwiaWF0IjoxNzU3MDQzMzcyLCJleHAiOjE5Mjk4NDMzNzJ9...
+
   schemas:
     ApplicationCreateRequestDto:
       type: object
@@ -77,6 +124,7 @@ components:
         - amount
         - term
         - document
+        - token
       properties:
         amount:
           type: number
@@ -100,6 +148,12 @@ components:
           maxLength: 100
           minLength: 1
           description: Número de documento de identidad
+          example: "12345678"
+        token:
+          type: string
+          description: |
+            Token JWT que debe coincidir con el token enviado en el header Authorization.
+            Debe contener el claim 'role' con el ID del rol del usuario.
           example: "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoyMiwiaWF0IjoxNzU3MDQzMzcyLCJleHAiOjE5Mjk4NDMzNzJ9.nXbn8MIAKySeA8hwDULKYjRfVj6HU1Z9DFk1EXuMXc5ri-e07SYRUx6MgNF5tKEjU9rbEMjpTfugBtrQTSPkbQ"
 
     ApplicationCreateResponseDto:
@@ -157,6 +211,21 @@ components:
         - message
         - code
         - timestamp
+
+    AuthenticationErrorDto:
+      type: object
+      properties:
+        error:
+          type: string
+          description: "Mensaje de error de autenticación"
+          example: "Token de autorización requerido"
+        status:
+          type: integer
+          description: "Código de estado HTTP"
+          example: 401
+      required:
+        - error
+        - status
 
 tags:
   - name: Applications

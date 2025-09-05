@@ -69,3 +69,7 @@ resilience4j:
         slidingWindowSize: 10
         minimumNumberOfCalls: 10
         waitDurationInOpenState: "10s"
+
+jwt:
+  secret: tu-clave-secreta-super-mega-ultra-larga-y-segura-para-produccion-que-debe-tener-al-menos-64-caracteres-para-cumplir-con-hs512
+  expiration: 2

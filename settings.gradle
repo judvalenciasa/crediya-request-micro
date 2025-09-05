@@ -27,3 +27,5 @@ project(':reactive-web').projectDir = file('./infrastructure/entry-points/reacti
 include ':rest-consumer'
 project(':rest-consumer').projectDir = file('./infrastructure/driven-adapters/rest-consumer')
 include ':infrastructure:driven-adapters:rest-consumer'
+include ':security'
+project(':security').projectDir = file('./infrastructure/driven-adapters/security')
