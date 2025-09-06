@@ -52,8 +52,9 @@ public class UserServiceRestConsumer implements UserServiceGateway {
                 });
     }
 
-    public Mono<Boolean> existsByDocumentFallback(String document, Exception ex) {
-        log.warn("Circuit breaker open for user exists check, document: {}, error: {}", document, ex.getMessage());
+    public Mono<Boolean> existsByDocumentFallback(String document, String token, Throwable throwable) {
+        log.warn("Circuit breaker open for user exists check, document: {}, token: {}, error: {}",
+                document, token, throwable.getMessage());
         return Mono.error(new BusinessException("Servicio de usuarios no disponible temporalmente"));
     }
 }

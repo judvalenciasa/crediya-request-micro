@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 public interface IApplicationUseCase {
 
     Mono<Application> saveApplication(Application application) ;
+
 }

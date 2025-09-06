@@ -21,6 +21,7 @@ public class RouterRest {
     public RouterFunction<ServerResponse> userRoutes() {
         return route()
                 .POST("/api/v1/applications", applicationHandler::createApplication)
+                .GET("/api/v1/applications", applicationHandler::getListApplication)
                 .GET("/openapi/openapi.yaml", request ->
                         ServerResponse.ok()
                                 .contentType(MediaType.parseMediaType("application/yaml"))

@@ -47,7 +47,8 @@ public class JwtAuthenticationFilter implements WebFilter {
                     if (Boolean.FALSE.equals(hasAccess)) {
                         return Mono.error(new AuthenticationException("Acceso denegado: sin permisos"));
                     }
-                    return chain.filter(exchange);
+                    return chain.filter(exchange)
+                            .contextWrite(ctx -> ctx.put("JWT_TOKEN", token));
                 })
                 .onErrorResume(ex -> unauthorizedResponse(exchange, ex.getMessage()));
     }

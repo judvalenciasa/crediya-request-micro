@@ -53,4 +53,17 @@ public class Token implements AuthGateway {
         return Mono.just(role);
     }
 
+    @Override
+    public Mono<String> getCurrentToken() {
+        return Mono.deferContextual(ctx -> {
+            String token = ctx.getOrDefault("JWT_TOKEN", "");
+            if (token.isEmpty()) {
+                return Mono.empty();
+            }
+            return Mono.just(token);
+        });
+    }
+
+
+
 }

@@ -50,5 +50,29 @@ public class ApplicationHandler {
                 .onErrorResume(globalExceptionHandler::handleError);
     }
 
+    public Mono<ServerResponse> getListApplication(ServerRequest serverRequest) {
+        log.info("event=GET_LIST_CREATION_INITIATED");
+        return serverRequest.bodyToMono(ApplicationCreateRequestDto.class)
+                .flatMap(dto -> {
+                    Errors errors = new BeanPropertyBindingResult(dto, ApplicationCreateRequestDto.class.getName());
+                    validator.validate(dto, errors);
+
+                    if (errors.hasErrors()) {
+                        return Mono.error(new ValidationExceptionDto(errors));
+                    }
+
+                    log.info("Use case starting");
+                    return iApplicationUseCase.saveApplication(applicationMapper.toEntity(dto));
+                })
+                .doOnNext(savedApplication -> log.info("event=GET_LIST_SUCCESSFULLY, application={}", savedApplication))
+                .map(applicationMapper::toDto)
+                .doOnNext(responseDto -> log.info("event=RESPONSE_DTO_GENERATED, response={}", responseDto))
+                .flatMap(applicationResponse -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(applicationResponse))
+                .doOnSuccess(response -> log.info("event=APPLICATION_GET_LIST_COMPLETED"))
+                .onErrorResume(globalExceptionHandler::handleError);
+    }
+
 
 }

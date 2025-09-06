@@ -40,10 +40,9 @@ paths:
             schema:
               $ref: '#/components/schemas/ApplicationCreateRequestDto'
             example:
-              amount: 5000000.00
+              amount: 500000.00
               term: 12
-              document: "12345678"
-              token: "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoyMiwiaWF0IjoxNzU3MDQzMzcyLCJleHAiOjE5Mjk4NDMzNzJ9.nXbn8MIAKySeA8hwDULKYjRfVj6HU1Z9DFk1EXuMXc5ri-e07SYRUx6MgNF5tKEjU9rbEMjpTfugBtrQTSPkbQ"
+              document: "878549622"
       responses:
         '200':
           description: Solicitud creada exitosamente
@@ -55,9 +54,9 @@ paths:
                 idRequest: 1
                 stateId: 1
                 loantypeId: 2
-                amount: 5000000.00
+                amount: 500000.00
                 term: 12
-                document: "12345678"
+                document: "878549622"
         '400':
           description: Datos de entrada inválidos o monto fuera de rango
           content:

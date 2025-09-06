@@ -11,28 +11,18 @@ public class Application {
     private double amount;
     private int term;
     private String document;
-    private String token;
 
     public Application() {
 
     }
 
-    public Application(Long idRequest, Long stateId, Long loantypeId, double amount, int term, String document, String token) {
+    public Application(Long idRequest, Long stateId, Long loantypeId, double amount, int term, String document  ) {
         this.idRequest = idRequest;
         this.stateId = stateId;
         this.loantypeId = loantypeId;
         this.amount = amount;
         this.term = term;
         this.document = document;
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public Long getIdRequest() {

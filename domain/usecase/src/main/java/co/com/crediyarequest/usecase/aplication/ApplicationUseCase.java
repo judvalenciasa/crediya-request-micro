@@ -6,8 +6,10 @@ import co.com.crediyarequest.model.application.gateways.ApplicationRepository;
 import co.com.crediyarequest.model.application.gateways.UserServiceGateway;
 import co.com.crediyarequest.model.loantype.LoanType;
 import co.com.crediyarequest.model.loantype.gateways.LoanTypeRepository;
+import co.com.crediyarequest.model.security.gateways.AuthGateway;
 import co.com.crediyarequest.model.state.State;
 import co.com.crediyarequest.model.state.gateways.StateRepository;
+import co.com.crediyarequest.usecase.security.ISecurityUseCase;
 import exceptions.BusinessException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -19,7 +21,7 @@ public class ApplicationUseCase implements IApplicationUseCase {
     private final LoanTypeRepository loanTypeRepository;
     private final StateRepository stateRepository;
     private final UserServiceGateway userServiceGateway;
-
+    private final AuthGateway authGateway;
 
 
     @Override
@@ -41,12 +43,15 @@ public class ApplicationUseCase implements IApplicationUseCase {
     }
 
     private Mono<Void> validateUserExistsService(Application application) {
-        return userServiceGateway.existsByDocument(application.getDocument(), application.getToken())
+        return authGateway.getCurrentToken()
+                .switchIfEmpty(Mono.error(new BusinessException("Missing JWT token")))
+                .flatMap(token -> userServiceGateway.existsByDocument(application.getDocument(), token))
                 .flatMap(exists -> {
                     if (Boolean.TRUE.equals(exists)) {
                         return Mono.empty();
                     } else {
-                        return Mono.error(new BusinessException("The user with document" + application.getDocument() + " does not exist"));
+                        return Mono.error(new BusinessException(
+                                "The user with document " + application.getDocument() + " does not exist"));
                     }
                 });
     }
