@@ -37,7 +37,7 @@ public class SecurityUseCase implements ISecurityUseCase {
         return Mono.fromCallable(() -> {
             Map<String, List<Long>> rules = Map.of(
                     "/api/v1/applications:POST", List.of(cliente),
-                    "/api/v1/applications:GET", List.of(asesor),
+                    "/api/v1/applications:GET", List.of(asesor, administrador),
                     "/api/v1/applications:PUT", List.of(asesor)
             );
 

@@ -12,6 +12,7 @@ import co.com.crediyarequest.model.state.gateways.StateRepository;
 import co.com.crediyarequest.usecase.security.ISecurityUseCase;
 import exceptions.BusinessException;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
@@ -67,4 +68,10 @@ public class ApplicationUseCase implements IApplicationUseCase {
                 .map(State::getIdState)
                 .switchIfEmpty(Mono.error(new BusinessException("'Pending Review' status not found")));
     }
+
+    @Override
+    public Flux<Application> getAllApplication() {
+        return applicationRepository.getAllApplication();
+    }
+
 }
