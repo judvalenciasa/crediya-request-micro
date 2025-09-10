@@ -23,12 +23,12 @@ cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080, http://localhost:8083"
 adapters:
   r2dbc:
-    host: "localhost"
-    port: 5432
-    database: "crediya_request"
-    schema: "public"
-    username: "crediya"
-    password: "crediya"
+    host: ${ADAPTERS_R2DBC_HOST:request-db}
+    port: ${ADAPTERS_R2DBC_PORT:5432}
+    database: ${ADAPTERS_R2DBC_DATABASE:crediya_request}
+    schema: ${ADAPTERS_R2DBC_SCHEMA:public}
+    username: ${ADAPTERS_R2DBC_USERNAME:crediya}
+    password: ${ADAPTERS_R2DBC_PASSWORD:crediya}
 springdoc:
   swagger-ui:
     url: "/openapi/openapi.yaml"
